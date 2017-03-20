@@ -9,9 +9,10 @@ rectangles = []
 polygons = []
 engine = undefined
 board = undefined
+img = undefined
 
 class Chip
-  constructor: (@gate) ->
+  constructor: (@gate, @img) ->
 
   jitter: ->
     Math.floor(Math.random() * 20) - 10
@@ -22,7 +23,7 @@ class Chip
       22,
       friction: 0.001,
       restitution: 0.75,
-      sleepThreshold: 10,
+      sleepThreshold: 20,
       isChip: true
     )
 
@@ -113,7 +114,7 @@ placeSensors = ->
     i++
 
 dropChip = (gate) ->
-  chip = new Chip(gate)
+  chip = new Chip(gate, img)
   console.log(chip.body())
   circles.push(chip.body())
   World.add engine.world, chip.body()
@@ -144,11 +145,23 @@ play = ->
   ), 4000)
   return
 
+drawChip = (p, body) ->
+  p.fill(0)
+  rad = body.circleRadius
+  ctx = $('canvas')[0].getContext('2d')
+  ctx.save()
+  ctx.translate(body.position.x, body.position.y)
+  ctx.rotate(body.angle)
+  pat = ctx.createPattern($('#img')[0], "repeat")
+  ctx.beginPath()
+  ctx.arc(0, 0, rad, 0, 2 * Math.PI, false)
+  ctx.fillStyle = pat
+  ctx.fill()
+  ctx.restore()
+  return
+
 drawEllipse = (p, body) ->
-  if body.isChip
-    p.fill(255, 0, 0)
-  else
-    p.fill(0)
+  p.fill(0)
   p.ellipse(body.position.x, body.position.y, body.circleRadius * 2)
   return
 
@@ -164,8 +177,12 @@ drawPoly = (p, body) ->
   return
 
 myp = new p5 (p) ->
+  p.preload = ->
+    img = p.loadImage('assets/me.jpg')
+    return
+
   p.setup = ->
-    p.frameRate(30)
+    p.frameRate(60)
     engine = Engine.create(enableSleeping: true)
     engine.world = World.create({ gravity: { x: 0, y: 1, scale: 0.0009 } })
 
@@ -190,7 +207,8 @@ myp = new p5 (p) ->
   p.draw = ->
     p.clear()
     $.each engine.world.bodies, (_i, body) ->
-      drawEllipse(p, body) if body.label == "Circle Body"
+      drawEllipse(p, body) if body.label == "Circle Body" && !body.isChip
+      drawChip(p, body) if body.isChip
       drawRect(p, body) if body.label == "Rectangle Body"
       drawPoly(p, body) if body.label == "Body"
       Events.on body, 'sleepStart', (event) ->
@@ -201,5 +219,17 @@ myp = new p5 (p) ->
     placeSlotNumbers(p)
     placeBinScores(p)
     return
+
+checkFb = ->
+  setTimeout(( ->
+    response = undefined
+    FB.login ( ->
+      response = FB.api 'me?fields=video_broadcasts.limit(1){comments,reactions}', 'get'
+      return
+    ), scope: 'user_videos'
+    console.log response
+    checkFb()
+  ), 5000)
+  return
 
 play()
