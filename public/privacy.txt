@@ -7,7 +7,7 @@ WHAT PERSONAL INFORMATION DOES Plinko Live COLLECT?
 We collect the following types of information from our users:
 
 Personal Information You Provide to Us:
-We may receive and store any information you submit to the Application (or otherwise authorize us to obtain – such as, from (for example) your Facebook account). The types of personal information collected may include your full name, email address, gender, IP address, browser information, username, demographic information, and any other information necessary for us to provide the Application services.
+We may receive and store any information you submit to the Application (or otherwise authorize us to obtain - such as, from (for example) your Facebook account). The types of personal information collected may include your full name, email address, gender, IP address, browser information, username, demographic information, and any other information necessary for us to provide the Application services.
 
 Personal Information Collected Automatically:
 We receive and store certain types of usage related information whenever you interact with Application. For example, Plinko Live may automatically receive and record information regarding your computer's IP address, browser information, Facebook user ID, Facebook Page fan status, and URLs accessed. Such information may be shared in aggregate (non-personally identifiable) form with our partners.
@@ -18,11 +18,11 @@ Plinko Live uses the information described in this Privacy Statement (i) interna
 
 APPLICATION PARTNER TREATMENT OF PERSONAL INFORMATION.
 
-Plinko Live may provide personal information to the applicable Application Partner. The Application Partner's use of your personal information is subject to the Application Partner's separate privacy policy – and not this Privacy Statement. The Application Partner's privacy policy is linked to from within the Partner's Facebook application.
+Plinko Live may provide personal information to the applicable Application Partner. The Application Partner's use of your personal information is subject to the Application Partner's separate privacy policy - and not this Privacy Statement. The Application Partner's privacy policy is linked to from within the Partner's Facebook application.
 
 WILL Plinko Live SHARE ANY OF THE PERSONAL INFORMATION IT RECEIVES?
 
-Personal information about our users is an integral part of our business. We neither rent nor sell your personal information to anyone (with the exception of sharing your information with an applicable Application Partner – see the "Application Partner Treatment" section above). We share your personal information only as described below.
+Personal information about our users is an integral part of our business. We neither rent nor sell your personal information to anyone (with the exception of sharing your information with an applicable Application Partner - see the "Application Partner Treatment" section above). We share your personal information only as described below.
 
 Application Partners: We will share your personal information with an applicable Application Partner (see the "Application Partner Treatment" section above).
 
