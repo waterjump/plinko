@@ -13,7 +13,6 @@ gem 'coffee-rails', '~> 4.1.0'
 # gem 'therubyracer', platforms: :ruby
 
  gem 'haml-rails'
- gem "google_custom_search_api"
  gem 'compass-rails'
 
 
