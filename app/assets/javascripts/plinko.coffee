@@ -8,189 +8,44 @@ circles = []
 rectangles = []
 polygons = []
 engine = undefined
-board = undefined
 img = undefined
+response = undefined
+players = []
+activeChips = []
+myInterface = new Interface()
+gameStart = (new Date).toISOString()
 
-class Chip
-  constructor: (@gate, @img) ->
+fetchPicture = (id) ->
+  result = undefined
+  $.ajax(
+    async: false,
+    headers: { Accept : "application/json" }
+    method: 'GET'
+    url: 'https://graph.facebook.com/v2.8/' + id + '/picture?redirect=false&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD',
+    success: (json) ->
+      result = json.data.url
+  )
+  result
 
-  jitter: ->
-    Math.floor(Math.random() * 20) - 10
-  body: ->
-    Matter.Bodies.circle(
-      80.5 + ((@gate - 1) * 60) + @jitter(),
-      20,
-      22,
-      friction: 0.001,
-      restitution: 0.75,
-      sleepThreshold: 20,
-      isChip: true
-    )
-
-placePegs = ->
-  x = undefined
-  y = 20
-  cols = undefined
-  offset = undefined
-  i = 0
-  while i < 13
-    y = y + 50
-    if i % 2 == 0
-      cols = 8
-      offset = 110
-    else
-      cols = 7
-      offset = 140
-    j = 0
-    x = offset
-    while j < cols
-      circles.push Bodies.circle(
-        x,
-        y,
-        2.5,
-        isStatic: true
-      )
-      x = x + 60
-      j++
-    i++
-  return
-
-placeWalls = ->
-  rectangles.push Bodies.rectangle(25,449,50,760, isStatic: true)
-  rectangles.push Bodies.rectangle(615,449,50,760, isStatic: true)
-  leftWallTriangle = Matter.Vertices.fromPath('0 0 30 50 0 100')
-  rightWallTriangle = Matter.Vertices.fromPath('0 0 0 100 -30 50')
-  i = 0
-  while i < 6
-    polygons = polygons.concat Bodies.fromVertices(60, 119 + 100 * i, leftWallTriangle, isStatic: true)
-    polygons = polygons.concat Bodies.fromVertices(580, 119 + 100 * i, rightWallTriangle, isStatic: true)
-    i++
-
-placeBinWalls = ->
-  x = 50
-  i = 0
-  while i < 10
-    rectangles.push Bodies.rectangle(x, 780, 5, 110, isStatic: true)
-    x = x + 60
-    i++
-  return
-
-placeSlotNumbers = (p) ->
-  i = 1
-  while i < 10
-    p.textSize(32)
-    p.fill(0)
-    p.text(parseInt(i), 10 + i * 60, 55)
-    i++
-  return
-
-placeBinScores = (p) ->
-  p.translate(0, 820)
-  p.fill(0)
-  p.rotate(-Math.PI / 2 )
-  scores = ['100','500','1000','- 0 -','10,000','- 0 -','1000','500','100']
-  i = 0
-  while i < scores.length
-    p.text(scores[i], 10, 90 + i * 60)
-    i++
-
-placeSensors = ->
-  scores = [100, 500, 1000, 0, 10000, 0, 1000, 500, 100]
-  offset = 80
-  i = 0
-  while i < scores.length
-    rectangles.push(
-      Bodies.rectangle(
-        offset + (60 * i),
-        788,
-        55,
-        80,
-        isSensor: true,
-        isStatic: true,
-        category: 'score',
-        value: scores[i]
-      )
-    )
-    i++
-
-dropChip = (gate) ->
-  chip = new Chip(gate, img)
-  console.log(chip.body())
-  circles.push(chip.body())
-  World.add engine.world, chip.body()
+dropChip = (chip) ->
+  console.log(chip)
+  circles.push(chip.body)
+  chip.player.hasActiveChip = true
+  World.add engine.world, chip.body
   Engine.update(engine)
   return
 
-$(document).on('keyup', ->
-  dropChip(Math.floor(Math.random() * 9) + 1)
-)
-
-rectX = (body) ->
-  body.position.x - (rectWidth(body) / 2)
-
-rectY = (body) ->
-  body.position.y - (rectHeight(body) / 2)
-
-rectWidth = (body) ->
-  body.bounds.max.x - body.bounds.min.x
-
-rectHeight = (body) ->
-  body.bounds.max.y - body.bounds.min.y
-
-play = ->
-  setTimeout((->
-    dropChip(Math.floor(Math.random() * 9) + 1)
-    play()
-    return
-  ), 4000)
-  return
-
-drawChip = (p, body) ->
-  p.fill(0)
-  rad = body.circleRadius
-  ctx = $('canvas')[0].getContext('2d')
-  ctx.save()
-  ctx.translate(body.position.x, body.position.y)
-  ctx.rotate(body.angle)
-  pat = ctx.createPattern($('#img')[0], "repeat")
-  ctx.beginPath()
-  ctx.arc(0, 0, rad, 0, 2 * Math.PI, false)
-  ctx.fillStyle = pat
-  ctx.fill()
-  ctx.restore()
-  return
-
-drawEllipse = (p, body) ->
-  p.fill(0)
-  p.ellipse(body.position.x, body.position.y, body.circleRadius * 2)
-  return
-
-drawRect = (p, body) ->
-  p.fill(0)
-  p.rect(rectX(body), rectY(body), rectWidth(body), rectHeight(body)) if !body.isSensor
-  return
-
-drawPoly = (p, body) ->
-  p.fill(0)
-  vc = body.vertices
-  p.triangle(vc[0].x, vc[0].y, vc[1].x, vc[1].y, vc[2].x, vc[2].y)
-  return
-
 myp = new p5 (p) ->
-  p.preload = ->
-    img = p.loadImage('assets/me.jpg')
-    return
-
   p.setup = ->
-    p.frameRate(60)
+    p.frameRate(30)
     engine = Engine.create(enableSleeping: true)
     engine.world = World.create({ gravity: { x: 0, y: 1, scale: 0.0009 } })
 
-    board = p.createCanvas(641, 850)
-    placePegs()
-    placeWalls()
-    placeBinWalls()
-    placeSensors()
+    p.createCanvas(641, 850)
+    myInterface.placePegs(circles)
+    myInterface.placeWalls(polygons, rectangles)
+    myInterface.placeBinWalls(rectangles)
+    myInterface.placeSensors(rectangles)
     rectangles.push Bodies.rectangle(320, 830, 641, 10, isStatic: true) # floor
 
     World.add engine.world, circles
@@ -198,7 +53,13 @@ myp = new p5 (p) ->
     World.add engine.world, polygons
 
     Events.on(engine, "collisionStart", (event) ->
-      console.log(event.pairs[0]) if event.pairs[0].bodyA.isSensor || event.pairs[0].bodyB.isSensor
+      bodies = [event.pairs[0].bodyA, event.pairs[0].bodyB]
+      sensor = bodies.filter( (b) -> return b.isSensor )[0]
+      if sensor != undefined
+        body = bodies.filter( (b) -> return b.isChip )[0]
+        player = body.chip.player
+        player.score = player.score + sensor.value
+        myInterface.updateScore(players)
       return
     )
     Engine.run engine
@@ -207,29 +68,89 @@ myp = new p5 (p) ->
   p.draw = ->
     p.clear()
     $.each engine.world.bodies, (_i, body) ->
-      drawEllipse(p, body) if body.label == "Circle Body" && !body.isChip
-      drawChip(p, body) if body.isChip
-      drawRect(p, body) if body.label == "Rectangle Body"
-      drawPoly(p, body) if body.label == "Body"
+      myInterface.drawEllipse(p, body) if body.label == "Circle Body" && !body.isChip
+      $.each(activeChips, (_i, chip) ->
+        myInterface.drawChip(p, chip)
+      )
+      myInterface.drawRect(p, body) if body.label == "Rectangle Body"
+      myInterface.drawPoly(p, body) if body.label == "Body"
       Events.on body, 'sleepStart', (event) ->
-        if !(body.isStatic)
+        if !(body.isStatic) && body.position.y > 750
+          body.chip.player.hasActiveChip = false
+          activeChips = activeChips.filter( (chip) ->
+            chip != body.chip
+          )
           Matter.Composite.remove(engine.world, body)
         return
       return
-    placeSlotNumbers(p)
-    placeBinScores(p)
+    myInterface.placeSlotNumbers(p)
+    myInterface.placeBinScores(p)
     return
+
+newPlayerQ = (id, name, msg, time) ->
+  return if time < gameStart
+  newPlayer = new Player(id, name, time)
+  chip = new Chip(msg, newPlayer, time)
+  activeChips.push(chip)
+  newPlayer.picture = fetchPicture(newPlayer.id)
+  newPlayer.placePicture(myInterface)
+  newPlayer.chips.push chip
+  players.push newPlayer
+  myInterface.updateScore(players)
+  dropChip(chip)
+
+updatePlayer = (player, msg, time) ->
+  console.log gameStart
+  console.log time
+  console.log (time > gameStart)
+  if time > player.lastComment && !player.hasActiveChip && time > gameStart && player.chips.length < 5
+    player.lastComment = time
+    chip = new Chip(msg, player, time)
+    activeChips.push(chip)
+    player.chips.push(chip)
+    dropChip(chip)
+
+compare = (a,b) ->
+  if a.created_time < b.created_time
+    return -1
+  if a.created_time > b.created_time
+    return 1
+  0
+
+setupPlayer = (json) ->
+  console.log json
+  comments = json.live_videos.data[0].comments.data
+  comments = comments.sort(compare)
+  console.log comments
+  i = 0
+  while i < comments.length
+    name = comments[i].from.name
+    id = comments[i].from.id
+    message = comments[i].message.trim()
+    time = comments[i].created_time
+    values = ['1','2','3','4','5','6','7','8','9']
+    if values.includes(message)
+      player = players.filter( (p) ->
+        return p.id == id
+      )[0]
+      if player == undefined
+        newPlayerQ(id, name, message, time)
+      else
+        console.log player
+        updatePlayer(player, message, time)
+      i++
 
 checkFb = ->
   setTimeout(( ->
-    response = undefined
-    FB.login ( ->
-      response = FB.api 'me?fields=video_broadcasts.limit(1){comments,reactions}', 'get'
+    $.ajax(
+      method: 'GET'
+      url: 'https://graph.facebook.com/v2.8/me?fields=live_videos.limit(1)%7Bstatus%2Ccomments%7D&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD'
+    ).done (json) ->
+      setupPlayer(json)
       return
-    ), scope: 'user_videos'
-    console.log response
     checkFb()
+    return
   ), 5000)
   return
 
-play()
+checkFb()

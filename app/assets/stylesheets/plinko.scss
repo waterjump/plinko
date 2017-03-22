@@ -1,24 +1,16 @@
-#plinko {
-  width: 540px;
-  margin-top: 20px;
-  .gate {
-    float: left;
-    width: 60px;
-    height: 35px;
-    border-bottom: 5px solid black;
-    border-image: url(peg.png);
-    border-image-slice: 5 0;
-  }
-  .eight {
-    margin-left: 30px;
-  }
+body{
+  background-color: yellow;
 }
 
-.chip {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  background-color: blue;
+.off-screen {
   position: absolute;
+  left: -9999px;
 }
 
+#scoreboard {
+  font-size: 30px;
+  font-family: sans-serif;
+  position: absolute;
+  top: 185px;
+  left: 669px;
+}

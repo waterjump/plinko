@@ -18,3 +18,5 @@
 .DS_Store
 *.swp
 *.swo
+*.scssc
+*.sw*
