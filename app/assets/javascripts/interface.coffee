@@ -10,7 +10,7 @@ App.Interface::drawChip = (p, chip) ->
   ctx.save()
   ctx.translate(body.position.x, body.position.y)
   ctx.rotate(body.angle)
-  pat = ctx.createPattern($('#' + chip.player.id)[0], "repeat")
+  pat = ctx.createPattern(chip.player.element, "repeat")
   ctx.beginPath()
   ctx.arc(0, 0, rad, 0, 2 * Math.PI, false)
   ctx.fillStyle = pat
@@ -137,10 +137,17 @@ App.Interface::placeSensors = (rectangles) ->
     )
     i++
 
+App.Interface::compare = (a,b) ->
+  if a.score < b.score
+    return -1
+  if a.score > b.score
+    return 1
+  0
+
 App.Interface::updateScore = (players) ->
   $('#scoreboard').html ''
-  newHtml = '<tr><td>Player</td><td>Score</td></tr>'
-  $.each(players, (i, player) ->
-    newHtml = newHtml + '<tr><td>' + parseInt(i + 1) + '. ' + player.name + '</td><td>' + parseInt(player.score) + '</td></tr>'
+  newHtml = '<tr><td>Player</td><td>Score&nbsp;</td><td>Chips remaining</td></tr>'
+  $.each(players.sort(App.Interface.compare), (i, player) ->
+    newHtml = newHtml + '<tr><td>' + parseInt(i + 1) + '. ' + player.name + '&nbsp;&nbsp;</td><td>' + parseInt(player.score) + '&nbsp;</td><td>' + parseInt(5 - player.chips.length) + '</td></tr>'
   )
   $('#scoreboard').html newHtml
