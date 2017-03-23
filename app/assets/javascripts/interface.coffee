@@ -134,7 +134,7 @@ App.Interface::placeSensors = (rectangles) ->
     )
     i++
 
-App.Interface::compare = (a,b) ->
+App.Interface.compare = (a,b) ->
   if a.score < b.score
     return -1
   if a.score > b.score
@@ -143,8 +143,8 @@ App.Interface::compare = (a,b) ->
 
 App.Interface::updateScore = (players) ->
   $('#scoreboard').html ''
-  newHtml = '<tr><td>Player</td><td>Score&nbsp;</td><td>Chips remaining</td></tr>'
-  $.each(players.sort(App.Interface.compare), (i, player) ->
+  newHtml = '<tr><td>Player</td><td>Score&nbsp;</td><td>Chips left</td></tr>'
+  $.each(players.sort(App.Interface.compare).reverse(), (i, player) ->
     newHtml = newHtml + '<tr><td>' + parseInt(i + 1) + '. ' + player.name + '&nbsp;&nbsp;</td><td>' + parseInt(player.score) + '&nbsp;</td><td>' + parseInt(5 - player.chips.length) + '</td></tr>'
   )
   $('#scoreboard').html newHtml

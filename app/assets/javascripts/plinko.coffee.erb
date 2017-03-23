@@ -19,6 +19,10 @@ myp = new p5 (p) ->
   circles = App.circles
   rectangles = App.rectangles
   polygons = App.polygons
+  img = undefined
+
+  p.preload = ->
+    img = p.loadImage("<%= asset_path('bob.png')  %>")
 
   p.setup = ->
     p.frameRate(60)
@@ -150,16 +154,17 @@ App.compare = (a,b) ->
 
 App.setupPlayer = (json) ->
   if json.live_videos != undefined
-    comments = json.live_videos.data[0].comments.data
+    comments = json.live_videos.data[0].comments
   else
-    comments = json.data[0].comments.data
+    comments = json
 
-  if comments.paging != undefined
+  if comments.paging != undefined && comments.paging.next != undefined
     App.commentEndpoint = comments.paging.next
+    console.log App.commentEndpoint
 
-  comments = comments.sort(App.compare)
+  comments = comments.data.sort(App.compare)
   $.each(comments, ((_i, comment) ->
-    if comment.created_time < App.gameStart
+    if comment.created_time > App.gameStart
       name = comment.from.name
       id = comment.from.id
       message = comment.message.trim()
