@@ -6,6 +6,8 @@ App.players = []
 App.activeChips = []
 App.myInterface = new App.Interface()
 App.gameStart = (new Date).toISOString()
+App.hue = 0
+App.commentEndpoint = 'https://graph.facebook.com/v2.8/me?fields=live_videos.limit(1)%7Bstatus%2Ccomments%7D&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD'
 
 myp = new p5 (p) ->
   # module aliases
@@ -20,6 +22,7 @@ myp = new p5 (p) ->
 
   p.setup = ->
     p.frameRate(60)
+    p.noStroke()
     engine = Engine.create(enableSleeping: true)
     engine.world = World.create({ gravity: { x: 0, y: 1, scale: 0.0009 } })
 
@@ -49,6 +52,17 @@ myp = new p5 (p) ->
     Engine.run engine
     return
 
+  p.keyPressed = ->
+    if p.keyCode > 48 && p.keyCode < 58
+      player = App.players.filter((p) ->
+        return p.id == 'me'
+      )[0]
+      if player == undefined
+        App.newPlayer('me', 'dummy', p.keyCode - 48, (new Date).toISOString())
+      else
+        App.updatePlayer(player, p.keyCode - 48, (new Date).toISOString())
+    return
+
   p.dropChip = (chip) ->
     chip.player.hasActiveChip = true
     body = chip.body
@@ -71,6 +85,8 @@ myp = new p5 (p) ->
       App.myInterface.drawChip(p, chip)
       return
     )
+    p.colorMode(p.HSB)
+    p.fill(App.hue, 360, 100)
     $.each engine.world.bodies, (_i, body) ->
       if !body.isChip
         App.myInterface.drawEllipse(p, body) if body.label == "Circle Body"
@@ -79,17 +95,19 @@ myp = new p5 (p) ->
       return
     App.myInterface.placeSlotNumbers(p)
     App.myInterface.placeBinScores(p)
+#    $('body').css 'background-color', 'hsl(' + App.hue + ', 100%, 50%)'
+    App.hue++
+    App.hue = 0 if App.hue > 360
     return
 
 hitFb = ->
   myp.httpGet(
-     'https://graph.facebook.com/v2.8/me?fields=live_videos.limit(1)%7Bstatus%2Ccomments%7D&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD',
-     {},
+    App.commentEndpoint,
+    {},
     'json',
     App.setupPlayer
   )
   return
-
 
 App.fetchPicture = (id) ->
   result = undefined
@@ -131,10 +149,17 @@ App.compare = (a,b) ->
   0
 
 App.setupPlayer = (json) ->
-  comments = json.live_videos.data[0].comments.data
+  if json.live_videos != undefined
+    comments = json.live_videos.data[0].comments.data
+  else
+    comments = json.data[0].comments.data
+
+  if comments.paging != undefined
+    App.commentEndpoint = comments.paging.next
+
   comments = comments.sort(App.compare)
   $.each(comments, ((_i, comment) ->
-    if comment.created_time > App.gameStart
+    if comment.created_time < App.gameStart
       name = comment.from.name
       id = comment.from.id
       message = comment.message.trim()

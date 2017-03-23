@@ -19,17 +19,14 @@ App.Interface::drawChip = (p, chip) ->
   return
 
 App.Interface::drawEllipse = (p, body) ->
-  p.fill(0)
   p.ellipse(body.position.x, body.position.y, body.circleRadius * 2)
   return
 
 App.Interface::drawRect = (p, body) ->
-  p.fill(0)
   p.rect(@rectX(body), @rectY(body), @rectWidth(body), @rectHeight(body)) if !body.isSensor
   return
 
 App.Interface::drawPoly = (p, body) ->
-  p.fill(0)
   vc = body.vertices
   p.triangle(vc[0].x, vc[0].y, vc[1].x, vc[1].y, vc[2].x, vc[2].y)
   return
@@ -68,8 +65,8 @@ App.Interface::placePicture = (id, picture) ->
   )
 
 App.Interface::placeWalls = (polygons, rectangles) ->
-  rectangles.push Bodies.rectangle(25,449,50,760, isStatic: true)
-  rectangles.push Bodies.rectangle(615,449,50,760, isStatic: true)
+  rectangles.push Bodies.rectangle(25,420,50,830, isStatic: true)
+  rectangles.push Bodies.rectangle(615,420,50,830, isStatic: true)
   leftWallTriangle = Matter.Vertices.fromPath('0 0 30 50 0 100')
   rightWallTriangle = Matter.Vertices.fromPath('0 0 0 100 -30 50')
   i = 0
