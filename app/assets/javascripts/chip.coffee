@@ -1,4 +1,4 @@
-class window.Chip
+class App.Chip
   constructor: (@gate, @player, @time) ->
     @jitter = @jitter || Math.floor(Math.random() * 20) - 10
     @body = @body ||

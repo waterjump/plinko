@@ -1,8 +1,8 @@
 Bodies = Matter.Bodies
 
-class window.Interface
+class App.Interface
 
-Interface::drawChip = (p, chip) ->
+App.Interface::drawChip = (p, chip) ->
   body = chip.body
   p.fill(0)
   rad = body.circleRadius
@@ -18,23 +18,23 @@ Interface::drawChip = (p, chip) ->
   ctx.restore()
   return
 
-Interface::drawEllipse = (p, body) ->
+App.Interface::drawEllipse = (p, body) ->
   p.fill(0)
   p.ellipse(body.position.x, body.position.y, body.circleRadius * 2)
   return
 
-Interface::drawRect = (p, body) ->
+App.Interface::drawRect = (p, body) ->
   p.fill(0)
   p.rect(@rectX(body), @rectY(body), @rectWidth(body), @rectHeight(body)) if !body.isSensor
   return
 
-Interface::drawPoly = (p, body) ->
+App.Interface::drawPoly = (p, body) ->
   p.fill(0)
   vc = body.vertices
   p.triangle(vc[0].x, vc[0].y, vc[1].x, vc[1].y, vc[2].x, vc[2].y)
   return
 
-Interface::placePegs = (circles) ->
+App.Interface::placePegs = (circles) ->
   x = undefined
   y = 20
   cols = undefined
@@ -62,12 +62,12 @@ Interface::placePegs = (circles) ->
     i++
   return
 
-Interface::placePicture = (id, picture) ->
+App.Interface::placePicture = (id, picture) ->
   $('body').append(
     '<img id="' + id + '" class="off-screen" src="' + picture + '" />'
   )
 
-Interface::placeWalls = (polygons, rectangles) ->
+App.Interface::placeWalls = (polygons, rectangles) ->
   rectangles.push Bodies.rectangle(25,449,50,760, isStatic: true)
   rectangles.push Bodies.rectangle(615,449,50,760, isStatic: true)
   leftWallTriangle = Matter.Vertices.fromPath('0 0 30 50 0 100')
@@ -78,7 +78,7 @@ Interface::placeWalls = (polygons, rectangles) ->
     polygons.push Bodies.fromVertices(580, 119 + 100 * i, rightWallTriangle, isStatic: true)
     i++
 
-Interface::placeBinWalls = (rectangles) ->
+App.Interface::placeBinWalls = (rectangles) ->
   x = 50
   i = 0
   while i < 10
@@ -87,7 +87,7 @@ Interface::placeBinWalls = (rectangles) ->
     i++
   return
 
-Interface::placeSlotNumbers = (p) ->
+App.Interface::placeSlotNumbers = (p) ->
   i = 1
   while i < 10
     p.textSize(40)
@@ -96,19 +96,19 @@ Interface::placeSlotNumbers = (p) ->
     i++
   return
 
-Interface::rectWidth = (body) ->
+App.Interface::rectWidth = (body) ->
   body.bounds.max.x - body.bounds.min.x
 
-Interface::rectHeight = (body) ->
+App.Interface::rectHeight = (body) ->
   body.bounds.max.y - body.bounds.min.y
 
-Interface::rectX = (body) ->
+App.Interface::rectX = (body) ->
   body.position.x - (@rectWidth(body) / 2)
 
-Interface::rectY = (body) ->
+App.Interface::rectY = (body) ->
   body.position.y - (@rectHeight(body) / 2)
 
-Interface::placeBinScores = (p) ->
+App.Interface::placeBinScores = (p) ->
   p.translate(0, 820)
   p.fill(0)
   p.rotate(-Math.PI / 2 )
@@ -118,7 +118,7 @@ Interface::placeBinScores = (p) ->
     p.text(scores[i], 10, 90 + i * 60)
     i++
 
-Interface::placeSensors = (rectangles) ->
+App.Interface::placeSensors = (rectangles) ->
   scores = [100, 500, 1000, 0, 10000, 0, 1000, 500, 100]
   offset = 80
   i = 0
@@ -137,7 +137,7 @@ Interface::placeSensors = (rectangles) ->
     )
     i++
 
-Interface::updateScore = (players) ->
+App.Interface::updateScore = (players) ->
   $('#scoreboard').html ''
   newHtml = '<tr><td>Player</td><td>Score</td></tr>'
   $.each(players, (i, player) ->

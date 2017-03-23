@@ -14,5 +14,4 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require matter.min.js
-//= require interface.coffee
 //= require_tree .
