@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rename'
 gem 'nokogiri', '>= 1.8.2'
 gem 'sprockets', '>= 3.7.2'
-
+gem 'loofah', '>= 2.2.3'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
