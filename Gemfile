@@ -4,7 +4,7 @@ gem 'rename'
 gem 'nokogiri', '>= 1.8.2'
 gem 'sprockets', '>= 3.7.2'
 gem 'loofah', '>= 2.2.3'
-
+gem 'rails-html-sanitizer', '>= 1.0.4'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7'
