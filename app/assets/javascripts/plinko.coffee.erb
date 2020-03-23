@@ -7,7 +7,7 @@ App.activeChips = []
 App.myInterface = new App.Interface()
 App.gameStart = (new Date).toISOString()
 App.hue = 0
-App.commentEndpoint = 'https://graph.facebook.com/v2.8/me?fields=live_videos.limit(1)%7Bstatus%2Ccomments%7D&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD'
+App.commentEndpoint = 'https://graph.facebook.com/v2.12/me?fields=live_videos.limit(1)%7Bstatus%2Ccomments%7D&access_token=EAACBSzUTHmYBAAWaxRadUW7nfNrmAHkoM9P1vHOFwwXcIHbmivCcwQ7ZC8Uu2BBchOrYEp1thxeme1JiscwMztIX3oWib9g1ZB8YDbRVnUZCS5t0odWduhsCYxwaBsySwRZAALWfxFv2ZB1B5QIQHgiKWuDqMVupZBoyUd1lawk7UuQqCHZC1l0WlCZAvpQTfIAiKdNHJkZBOFt4EgCKt4CZBaW6UcTcoqg9x5JmSFSnsgMAZDZD'
 
 myp = new p5 (p) ->
   # module aliases
@@ -119,7 +119,7 @@ App.fetchPicture = (id) ->
     async: false,
     headers: { Accept : "application/json" }
     method: 'GET'
-    url: 'https://graph.facebook.com/v2.8/' + id + '/picture?redirect=false&access_token=EAACBSzUTHmYBAH7kRC0egn7bMymktoEqqAY9eDmZCmYYrkLzKZCyZB1B4nVbgTZAdXHK3lOzyiWt2eLID9tiXbkyMvztFry1ZBo3ciGVVLZBC9IQ48WmUPXPULzduH6OXWxzaWaEO1HZCRK8TKoyokpeMZCPEvodcEcZD',
+    url: 'https://graph.facebook.com/v2.12/' + id + '/picture?redirect=false&access_token=EAACBSzUTHmYBAAWaxRadUW7nfNrmAHkoM9P1vHOFwwXcIHbmivCcwQ7ZC8Uu2BBchOrYEp1thxeme1JiscwMztIX3oWib9g1ZB8YDbRVnUZCS5t0odWduhsCYxwaBsySwRZAALWfxFv2ZB1B5QIQHgiKWuDqMVupZBoyUd1lawk7UuQqCHZC1l0WlCZAvpQTfIAiKdNHJkZBOFt4EgCKt4CZBaW6UcTcoqg9x5JmSFSnsgMAZDZD',
     success: (json) ->
       result = json.data.url
   )

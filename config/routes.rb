@@ -3,9 +3,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'visuals#cases'
-  get 'faded' => 'visuals#faded'
-  get 'sfo' => 'visuals#sfo'
   get 'plinko' => 'visuals#plinko'
 
   # Example of regular route:
